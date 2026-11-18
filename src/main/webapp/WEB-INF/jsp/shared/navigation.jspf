@@ -1,0 +1,14 @@
+<%@ page pageEncoding="UTF-8" %>
+<header class="app-navigation"><nav class="app-navigation-inner" aria-label="เมนูหลัก">
+<a class="app-brand" href="${pageContext.request.contextPath}/searchCourse">แพลตฟอร์มแลกเปลี่ยนทักษะด้วยเครดิตเวลา</a>
+<div class="app-links">
+<a href="${pageContext.request.contextPath}/searchCourse" class="${uiPage eq 'searchCourse' ? 'selected' : ''}">ค้นหาคอร์ส</a>
+<c:if test="${not empty sessionScope.memberId}">
+<a href="${pageContext.request.contextPath}/listRegisterCourse" class="${uiPage eq 'listRegisterCourse' ? 'selected' : ''}">คอร์สที่ฉันเรียน</a>
+<a href="${pageContext.request.contextPath}/listCourse" class="${uiPage eq 'listCourse' ? 'selected' : ''}">คอร์สที่ฉันสอน</a>
+<a href="${pageContext.request.contextPath}/viewCreditTime" class="${uiPage eq 'viewCreditTime' or uiPage eq 'viewCreditTransaction' ? 'selected' : ''}">เครดิตเวลา</a>
+</c:if></div>
+<c:choose><c:when test="${not empty sessionScope.memberId}"><details class="app-account"><summary><span class="app-avatar"><c:choose><c:when test="${sessionScope.memberHasProfileImage}"><img src="${pageContext.request.contextPath}/member/profile-image" alt="รูปโปรไฟล์"></c:when><c:otherwise><c:out value="${sessionScope.memberInitial}"/></c:otherwise></c:choose></span>บัญชีของฉัน ▾</summary>
+<div class="app-account-menu"><a href="${pageContext.request.contextPath}/viewProfile">ดูโปรไฟล์</a><a href="${pageContext.request.contextPath}/listSkill">ทักษะของฉัน</a><a href="${pageContext.request.contextPath}/createCourse">สร้างคอร์ส</a><form method="post" action="${pageContext.request.contextPath}/logoutMember"><button type="submit">ออกจากระบบ</button></form></div></details></c:when>
+<c:otherwise><a class="app-login" href="${pageContext.request.contextPath}/loginMember">เข้าสู่ระบบ</a></c:otherwise></c:choose>
+</nav></header>

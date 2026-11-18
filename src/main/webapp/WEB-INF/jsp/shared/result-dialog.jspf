@@ -1,0 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
+<c:if test="${not empty resultMessage}">
+    <span hidden data-app-alert><c:out value="${resultMessage}"/></span>
+</c:if>

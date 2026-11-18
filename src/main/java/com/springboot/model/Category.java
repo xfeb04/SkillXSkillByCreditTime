@@ -1,8 +1,5 @@
 package com.springboot.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -13,19 +10,14 @@ public class Category {
 	@Column(name = "category_id")
 	private Integer categoryId;
 
-	@Column(name = "categoryName", length = 100)
+	@Column(name = "categoryName", length = 100, nullable = false)
 	private String categoryName;
 
-	@Lob
-	@Column(name = "cateDescription")
+
+	@Column(name = "cateDescription", length = 255, nullable = false)
 	private String cateDescription;
 
-	@OneToMany(mappedBy = "category")
-	private List<Skill> skills = new ArrayList<>();
-
-	@OneToMany(mappedBy = "category")
-	private List<Course> courses = new ArrayList<>();
-
+	
 	public Category(Integer categoryId, String categoryName, String cateDescription) {
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
@@ -59,20 +51,6 @@ public class Category {
 		this.cateDescription = cateDescription;
 	}
 
-	public List<Skill> getSkills() {
-		return skills;
-	}
-
-	public void setSkills(List<Skill> skills) {
-		this.skills = skills;
-	}
-
-	public List<Course> getCourses() {
-		return courses;
-	}
-
-	public void setCourses(List<Course> courses) {
-		this.courses = courses;
-	}
+	
 
 }

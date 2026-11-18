@@ -1,81 +1,56 @@
 package com.springboot.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "coursedate")
+@Table(name = "course_date")
 public class CourseDate {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "course_date_id")
 	private Integer courseDateId;
 
-	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
-
-	@Column(name = "teachDate")
+	@Column(name = "teachDate", nullable = false)
 	private LocalDate teachDate;
 
-	@Column(name = "startTime")
-	private LocalDateTime startTime;
+	@Column(name = "startTime", nullable = false)
+	private LocalTime startTime;
 
-	@Column(name = "endTime")
-	private LocalDateTime endTime;
+	@Column(name = "endTime", nullable = false)
+	private LocalTime endTime;
 
-	public CourseDate(Integer courseDateId, Course course, LocalDate teachDate, LocalDateTime startTime,
-			LocalDateTime endTime) {
-		this.courseDateId = courseDateId;
-		this.course = course;
-		this.teachDate = teachDate;
-		this.startTime = startTime;
-		this.endTime = endTime;
-	}
+	@ManyToOne
+	@JoinColumn(name = "course_id", nullable = false)
+	private Course course;
 
 	public CourseDate() {
 	}
 
-	public Integer getCourseDateId() {
-		return courseDateId;
-	}
-
-	public void setCourseDateId(Integer courseDateId) {
-		this.courseDateId = courseDateId;
-	}
-
-	public Course getCourse() {
-		return course;
-	}
-
-	public void setCourse(Course course) {
+	public CourseDate(LocalDate teachDate, LocalTime startTime, LocalTime endTime, Course course) {
+		this.teachDate = teachDate;
+		this.startTime = startTime;
+		this.endTime = endTime;
 		this.course = course;
 	}
 
-	public LocalDate getTeachDate() {
-		return teachDate;
-	}
-
-	public void setTeachDate(LocalDate teachDate) {
-		this.teachDate = teachDate;
-	}
-
-	public LocalDateTime getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(LocalDateTime startTime) {
-		this.startTime = startTime;
-	}
-
-	public LocalDateTime getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(LocalDateTime endTime) {
-		this.endTime = endTime;
-	}
-
+	public Integer getCourseDateId() { return courseDateId; }
+	public LocalDate getTeachDate() { return teachDate; }
+	public void setTeachDate(LocalDate teachDate) { this.teachDate = teachDate; }
+	public LocalTime getStartTime() { return startTime; }
+	public void setStartTime(LocalTime startTime) { this.startTime = startTime; }
+	public LocalTime getEndTime() { return endTime; }
+	public void setEndTime(LocalTime endTime) { this.endTime = endTime; }
+	public Course getCourse() { return course; }
+	public void setCourse(Course course) { this.course = course; }
 }

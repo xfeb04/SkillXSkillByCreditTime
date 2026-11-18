@@ -18,32 +18,32 @@ public class Member {
 	@Column(name = "password", length = 255, nullable = false)
 	private String password;
 
-	@Column(name = "firstname", length = 100)
+	@Column(name = "firstname", length = 100, nullable = false)
 	private String firstname;
 
-	@Column(name = "surname", length = 100)
+	@Column(name = "surname", length = 100, nullable = false)
 	private String surname;
 
-	@Column(name = "email", length = 150)
+	@Column(name = "email", length = 150, nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "phoneNumber", length = 20)
+	@Column(name = "phoneNumber", length = 20, nullable = false)
 	private String phoneNumber;
 
-	@Column(name = "gender", length = 20)
+	@Column(name = "gender", length = 20, nullable = false)
 	private String gender;
 
 	@Lob
-	@Column(name = "imgProfile")
+	@Column(name = "imgProfile", columnDefinition = "MEDIUMBLOB")
 	private byte[] imgProfile;
 
-	@Column(name = "birthDay")
+	@Column(name = "birthDay", nullable = false)
 	private LocalDate birthDay;
 
-	@Column(name = "createdAt")
+	@Column(name = "createdAt", nullable = false)
 	private LocalDate createdAt;
 
-	@Column(name = "creditBalance")
+	@Column(name = "creditBalance", nullable = false)
 	private Double creditBalance;
 
 	@Column(name = "creditFrozen")
@@ -58,13 +58,18 @@ public class Member {
 	@Column(name = "banDate")
 	private LocalDate banDate;
 
-	// 1 Member อาจมี Teacher profile ผูกอยู่ (หรือไม่มีก็ได้)
-	@OneToOne(mappedBy = "member")
-	private Teacher teacherProfile;
 
-	// 1 Member อาจมี Student profile ผูกอยู่ (หรือไม่มีก็ได้) — มีพร้อมกับ Teacher ได้
-	@OneToOne(mappedBy = "member")
-	private Student studentProfile;
+	
+
+    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Student student;
+
+    public Student getStudent() { return student; }
+
+    public Student enableStudent() {
+        if (student == null) student = new Student(this);
+        return student;
+    }
 
 	public Member(Integer memberId, String username, String password, String firstname, String surname, String email,
 			String phoneNumber, String gender, byte[] imgProfile, LocalDate birthDay, LocalDate createdAt,
@@ -198,6 +203,11 @@ public class Member {
 		return banStatus;
 	}
 
+    public boolean isCurrentlyBanned() {
+        return Integer.valueOf(1).equals(banStatus) && (banDate == null
+                || LocalDate.now(java.time.ZoneId.of("Asia/Bangkok")).isBefore(banDate));
+    }
+
 	public void setBanStatus(Integer banStatus) {
 		this.banStatus = banStatus;
 	}
@@ -216,22 +226,6 @@ public class Member {
 
 	public void setBanDate(LocalDate banDate) {
 		this.banDate = banDate;
-	}
-
-	public Teacher getTeacherProfile() {
-		return teacherProfile;
-	}
-
-	public void setTeacherProfile(Teacher teacherProfile) {
-		this.teacherProfile = teacherProfile;
-	}
-
-	public Student getStudentProfile() {
-		return studentProfile;
-	}
-
-	public void setStudentProfile(Student studentProfile) {
-		this.studentProfile = studentProfile;
 	}
 
 }

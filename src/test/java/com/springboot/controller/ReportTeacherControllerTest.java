@@ -1,0 +1,54 @@
+package com.springboot.controller;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import java.util.*;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.*;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
+import org.springframework.web.server.ResponseStatusException;
+import com.springboot.model.*;
+import com.springboot.repository.*;
+class ReportTeacherControllerTest {
+    final RegisterCourseRepository registrations=mock(RegisterCourseRepository.class);
+    final ReportRepository reports=mock(ReportRepository.class);
+    final ReportTeacherController controller=new ReportTeacherController(registrations,reports);
+    final MockHttpSession session=new MockHttpSession();
+    final Teacher teacher=new Teacher(), learner=new Teacher();
+    void setup(){session.setAttribute("memberId",8);teacher.setMemberId(7);learner.setMemberId(8);
+        var course=new Course();course.setTeacher(teacher);
+        var registration=new RegisterCourse();registration.setCourse(course);registration.setMember(learner);registration.setRegisterStatus("อนุมัติแล้ว");
+        when(registrations.findById(9)).thenReturn(Optional.of(registration));}
+    @Test void savesReasonWithoutImageAndUsesDatabaseIdentities(){setup();
+        controller.submit(9,"ผู้เรียนรบกวนชั้นเรียน",null,session,new ExtendedModelMap(),new RedirectAttributesModelMap());
+        verify(reports).saveAndFlush(argThat(r -> r.getImgReport()==null && r.getReporter()==learner.getMember() && r.getReportedMember()==teacher.getMember() && "ผู้สอน".equals(r.getReportType())));}
+    @Test void rejectsBlankOrInvalidReason(){setup();
+        for(String reason:List.of("", "test!", "a".repeat(256))) assertEquals("reportTeacher",controller.submit(9,reason,null,session,new ExtendedModelMap(),new RedirectAttributesModelMap()));
+        verifyNoInteractions(reports);}
+    @Test void rejectsFakeImage(){setup();
+        var file=new MockMultipartFile("imgReport","fake.png","image/png",new byte[]{1,2,3});
+        assertEquals("reportTeacher",controller.submit(9,"เหตุผล",file,session,new ExtendedModelMap(),new RedirectAttributesModelMap()));verifyNoInteractions(reports);}
+    @Test void rejectsOversizedImage(){setup();
+        var file=new MockMultipartFile("imgReport","big.jpg","image/jpeg",new byte[5*1024*1024+1]);
+        assertEquals("reportTeacher",controller.submit(9,"เหตุผล",file,session,new ExtendedModelMap(),new RedirectAttributesModelMap()));verifyNoInteractions(reports);}
+    @Test void preventsOtherTeacher(){setup();session.setAttribute("memberId",99);
+        assertThrows(ResponseStatusException.class,()->controller.page(9,session,new ExtendedModelMap()));verifyNoInteractions(reports);}
+    @Test void rejectsPendingAndCancelledRegistrations(){setup();
+        var registration=registrations.findById(9).orElseThrow();
+        for(String status:List.of("รออนุมัติ","ยกเลิก","ปฏิเสธคำขอ")) {
+            registration.setRegisterStatus(status);
+            assertThrows(ResponseStatusException.class,()->controller.submit(9,"เหตุผล",null,session,new ExtendedModelMap(),new RedirectAttributesModelMap()));
+        }
+        verifyNoInteractions(reports);
+    }
+    @Test void acceptsCompletedRegistration(){setup();
+        registrations.findById(9).orElseThrow().setRegisterStatus("เรียนเสร็จสิ้น");
+        assertEquals("reportTeacher",controller.page(9,session,new ExtendedModelMap()));
+    }
+    @Test void savesValidPng() throws Exception {setup();
+        var output=new java.io.ByteArrayOutputStream();javax.imageio.ImageIO.write(new java.awt.image.BufferedImage(1,1,java.awt.image.BufferedImage.TYPE_INT_RGB),"png",output);
+        var file=new MockMultipartFile("imgReport","proof.png","image/png",output.toByteArray());
+        controller.submit(9,"เหตุผล",file,session,new ExtendedModelMap(),new RedirectAttributesModelMap());
+        verify(reports).saveAndFlush(argThat(r -> Arrays.equals(output.toByteArray(),r.getImgReport())));}
+}

@@ -1,0 +1,17 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>รายการรายงาน<c:out value="${party}"/></title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/list-course.css?v=1">
+<style>.report-heading{margin:24px 0;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.report-heading h1{font-size:1.5rem}.search{display:flex;gap:8px;flex-wrap:wrap}.search input{padding:12px;border:1px solid #dce8f3;border-radius:10px;font:inherit;max-width:100%}.report-card{padding:24px;background:white;border:1px solid #e1eaf1;border-radius:16px;margin-bottom:20px}.report-top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.report-top img{width:54px;height:54px;object-fit:cover;border-radius:10px}.report-top h2{margin:0;font-size:1.1rem}.report-top p{margin:4px 0;color:#66788a;overflow-wrap:anywhere}.report-date{margin-left:auto;color:#66788a;font-size:.85rem}.report-bottom{margin-top:18px;border-top:1px solid #edf1f5;padding-top:16px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}.reason{flex:1;min-width:180px;white-space:pre-wrap;overflow-wrap:anywhere}.report-actions{display:flex;gap:10px;flex-wrap:wrap}.report-actions a{padding:8px 14px;border-radius:8px;text-decoration:none;color:#0d67ba;border:1px solid #0d67ba}.report-actions .danger{color:#bd3333;border-color:#bd3333}.report-actions .ban{background:#fbecec}</style><link rel="stylesheet" href="${pageContext.request.contextPath}/css/app-ui.css?v=thai-brand-15">
+<script src="${pageContext.request.contextPath}/js/app-dialog.js?v=buddhist-picker-5"></script>
+</head><body class="app-ui ui-listReport">
+<%@ include file="navbar.jspf" %>
+
+<main class="course-shell"><a href="${pageContext.request.contextPath}/admin/adminHome">← กลับหน้าหลักผู้ดูแลระบบ</a>
+<div class="report-heading"><h1>รายการรายงานที่แจ้งเรื่อง<c:out value="${party}"/></h1>
+<form class="search" method="get" action="${pageContext.request.contextPath}/admin/listReport${type}"><input name="q" value="<c:out value='${q}'/>" aria-label="ค้นหาชื่อ นามสกุล หรืออีเมล" placeholder="ชื่อ นามสกุล หรืออีเมล"><button type="submit">ค้นหา</button><a class="detail-button" href="${pageContext.request.contextPath}/admin/listReport${type}">ล้าง</a></form></div>
+<c:if test="${not empty reportMessage}"><p class="success-message" role="status"><c:out value="${reportMessage}"/></p></c:if>
+<c:if test="${empty reports}"><p class="empty-state" role="status">ไม่พบรายการรายงาน</p></c:if>
+<c:forEach items="${reports}" var="report"><article class="report-card"><div class="report-top"><img src="${pageContext.request.contextPath}/member/${report.memberId}/profile-image" alt="รูปผู้ถูกรายงาน" onerror="this.hidden=true"><div><h2><c:out value="${report.name}"/></h2><p><c:out value="${report.email}"/></p></div><span class="report-date">วันที่ถูกรายงาน: <c:out value="${report.date}"/></span></div>
+<div class="report-bottom"><p class="reason"><c:out value="${report.reason}"/></p><div class="report-actions"><a href="${pageContext.request.contextPath}/admin/report/${report.reportId}/detail">ดูรายละเอียด</a><a class="danger ban" href="${pageContext.request.contextPath}/admin/report/${report.reportId}/ban">แบน</a></div></div></article></c:forEach>
+</main></body></html>

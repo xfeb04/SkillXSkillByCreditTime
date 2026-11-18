@@ -1,142 +1,90 @@
 package com.springboot.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "registercourse")
+@Table(name = "register_course")
 public class RegisterCourse {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "register_id")
-	private Integer registerId;
+	@Column(name = "register_course_id")
+	private Integer registerCourseId;
 
-	@ManyToOne
-	@JoinColumn(name = "student_member_id")
-	private Student student;
-
-	@ManyToOne
-	@JoinColumn(name = "course_id")
-	private Course course;
-
-	@Column(name = "registerStatus", length = 50)
+	@Column(name = "registerStatus", length = 50, nullable = false)
 	private String registerStatus;
 
-	@Column(name = "registeredAt")
+	@Column(name = "registeredAt", nullable = false)
 	private LocalDate registeredAt;
 
 	@Column(name = "ratingScore")
 	private Double ratingScore;
 
-	@Lob
-	@Column(name = "comment")
+	
+	@Column(name = "comment", length = 255)
 	private String comment;
 
 	@Column(name = "reviewDate")
 	private LocalDate reviewDate;
 
-	@OneToMany(mappedBy = "registerCourse")
-	private List<CreditTransaction> creditTransactions = new ArrayList<>();
+	@ManyToOne
+	@JoinColumn(name = "member_id", nullable = false)
+	private Student member;
 
-	@OneToMany(mappedBy = "registerCourse")
-	private List<Report> reports = new ArrayList<>();
+	@ManyToOne
+	@JoinColumn(name = "course_id", nullable = false)
+	private Course course;
 
-	public RegisterCourse(Integer registerId, Student student, Course course, String registerStatus,
-			LocalDate registeredAt, Double ratingScore, String comment, LocalDate reviewDate) {
-		this.registerId = registerId;
-		this.student = student;
-		this.course = course;
-		this.registerStatus = registerStatus;
-		this.registeredAt = registeredAt;
-		this.ratingScore = ratingScore;
-		this.comment = comment;
-		this.reviewDate = reviewDate;
-	}
+	@OneToOne(mappedBy = "registerCourse")
+	private CreditTransaction creditTransaction;
 
 	public RegisterCourse() {
 	}
 
-	public Integer getRegisterId() {
-		return registerId;
-	}
-
-	public void setRegisterId(Integer registerId) {
-		this.registerId = registerId;
-	}
-
-	public Student getStudent() {
-		return student;
-	}
-
-	public void setStudent(Student student) {
-		this.student = student;
-	}
-
-	public Course getCourse() {
-		return course;
-	}
-
-	public void setCourse(Course course) {
-		this.course = course;
-	}
-
-	public String getRegisterStatus() {
-		return registerStatus;
-	}
-
-	public void setRegisterStatus(String registerStatus) {
+	public RegisterCourse(String registerStatus, LocalDate registeredAt, Double ratingScore, String comment,
+			LocalDate reviewDate, Student member, Course course, CreditTransaction creditTransaction) {
 		this.registerStatus = registerStatus;
-	}
-
-	public LocalDate getRegisteredAt() {
-		return registeredAt;
-	}
-
-	public void setRegisteredAt(LocalDate registeredAt) {
 		this.registeredAt = registeredAt;
-	}
-
-	public Double getRatingScore() {
-		return ratingScore;
-	}
-
-	public void setRatingScore(Double ratingScore) {
 		this.ratingScore = ratingScore;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
 		this.comment = comment;
-	}
-
-	public LocalDate getReviewDate() {
-		return reviewDate;
-	}
-
-	public void setReviewDate(LocalDate reviewDate) {
 		this.reviewDate = reviewDate;
+		this.member = member;
+		this.course = course;
+		this.creditTransaction = creditTransaction;
 	}
 
-	public List<CreditTransaction> getCreditTransactions() {
-		return creditTransactions;
-	}
+    /** Accept a teaching role while registering its account's independent learner role. */
+    public RegisterCourse(String status, LocalDate registeredAt, Double rating, String comment,
+            LocalDate reviewedAt, Teacher learner, Course course, CreditTransaction transaction) {
+        this(status, registeredAt, rating, comment, reviewedAt, learner.getStudent(), course, transaction);
+    }
+    public void setMember(Teacher learner) { this.member = learner.getStudent(); }
 
-	public void setCreditTransactions(List<CreditTransaction> creditTransactions) {
-		this.creditTransactions = creditTransactions;
-	}
-
-	public List<Report> getReports() {
-		return reports;
-	}
-
-	public void setReports(List<Report> reports) {
-		this.reports = reports;
-	}
-
+	public Integer getRegisterCourseId() { return registerCourseId; }
+	public String getRegisterStatus() { return registerStatus; }
+	public void setRegisterStatus(String registerStatus) { this.registerStatus = registerStatus; }
+	public LocalDate getRegisteredAt() { return registeredAt; }
+	public void setRegisteredAt(LocalDate registeredAt) { this.registeredAt = registeredAt; }
+	public Double getRatingScore() { return ratingScore; }
+	public void setRatingScore(Double ratingScore) { this.ratingScore = ratingScore; }
+	public String getComment() { return comment; }
+	public void setComment(String comment) { this.comment = comment; }
+	public LocalDate getReviewDate() { return reviewDate; }
+	public void setReviewDate(LocalDate reviewDate) { this.reviewDate = reviewDate; }
+	public Student getMember() { return member; }
+	public void setMember(Student member) { this.member = member; }
+	public Course getCourse() { return course; }
+	public void setCourse(Course course) { this.course = course; }
+	public CreditTransaction getCreditTransaction() { return creditTransaction; }
+	public void setCreditTransaction(CreditTransaction creditTransaction) { this.creditTransaction = creditTransaction; }
 }

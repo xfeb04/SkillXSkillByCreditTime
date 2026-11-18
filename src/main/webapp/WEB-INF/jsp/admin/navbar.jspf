@@ -1,0 +1,9 @@
+<%@ page pageEncoding="UTF-8" %>
+<style>
+.admin-navbar{background:#fff;border-bottom:1px solid #e1eaf1;padding:18px 24px;font-family:"Noto Sans Thai",Tahoma,sans-serif}.admin-navbar-inner{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.admin-navbar-brand{color:#0d67ba;text-decoration:none;font-weight:700}.admin-navbar form{margin:0}.admin-navbar button{padding:9px 18px;border:1px solid #0d67ba;border-radius:8px;background:white;color:#0d67ba;font:inherit;cursor:pointer}.admin-navbar button:hover{background:#eaf3ff}.admin-navbar button:focus-visible{outline:3px solid #80bfff;outline-offset:3px}
+</style>
+<header class="admin-navbar"><nav class="admin-navbar-inner" aria-label="เมนูผู้ดูแลระบบ">
+<a class="admin-navbar-brand" href="${pageContext.request.contextPath}/admin/adminHome">แพลตฟอร์มแลกเปลี่ยนทักษะด้วยเครดิตเวลา</a>
+<div class="admin-navigation-links"><a href="${pageContext.request.contextPath}/admin/listCategory">หมวดหมู่</a><a href="${pageContext.request.contextPath}/admin/listReportStudent">รายงานผู้เรียน</a><a href="${pageContext.request.contextPath}/admin/listReportTeacher">รายงานผู้สอน</a></div>
+<form action="${pageContext.request.contextPath}/admin/logoutAdmin" method="post"><button type="submit">ออกจากระบบ</button></form>
+</nav></header>

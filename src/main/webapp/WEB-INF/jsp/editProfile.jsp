@@ -1,0 +1,25 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แก้ไขโปรไฟล์</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/list-course.css?v=1">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/member-navbar.css?v=1">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/app-ui.css?v=thai-brand-15">
+<script src="${pageContext.request.contextPath}/js/app-dialog.js?v=buddhist-picker-5"></script>
+</head><body class="app-ui ui-editProfile">
+<c:set var="uiPage" value="editProfile"/>
+<%@ include file="shared/navigation.jspf" %>
+<main class="course-shell"><a href="${pageContext.request.contextPath}/viewProfile">← กลับโปรไฟล์</a><h1>แก้ไขโปรไฟล์</h1>
+<style>.profile-form{display:grid;grid-template-columns:180px 1fr;gap:30px;background:white;padding:32px;border-radius:16px;margin-top:24px}.profile-photo img{width:140px;height:140px;object-fit:cover;border-radius:50%}.profile-photo input{max-width:100%}.profile-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}.profile-fields label{display:block;margin-bottom:8px}.profile-fields input:not([type=radio]),.profile-fields textarea{width:100%;background:#f3f4f6;border:1px solid #dce5ee;border-radius:8px;padding:12px;font:inherit}.wide{grid-column:1/-1}.field-error{font-size:.85rem;color:#c62828}.profile-fields textarea{min-height:140px}.gender-option{display:inline-block!important;margin-right:12px}@media(max-width:650px){.profile-form,.profile-fields{grid-template-columns:1fr}.wide{grid-column:auto}}</style>
+<form id="profile-form" class="profile-form" method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/editProfile" novalidate>
+<div class="profile-photo"><img id="preview" src="${pageContext.request.contextPath}/member/profile-image" alt="รูปโปรไฟล์" onerror="this.hidden=true"><label class="profile-image-picker" for="imgProfile">เลือกรูปภาพ</label><input id="imgProfile" class="profile-image-input" aria-label="เลือกรูปภาพ" aria-describedby="profile-image-hint imgProfile-error" name="imgProfile" type="file" accept=".jpg,.jpeg,.png,.gif"><p id="profile-image-hint" class="profile-image-hint">JPG JPEG PNG GIF ไม่เกิน 5MB</p><p id="imgProfile-error" class="field-error"><c:out value="${errors.imgProfile}"/></p></div><div class="profile-fields">
+<div><label for="firstname">ชื่อ</label><input id="firstname" name="firstname" type="text" maxlength="100" required value="<c:out value='${values.firstname}'/>" aria-describedby="firstname-error"><p id="firstname-error" class="field-error"><c:out value="${errors.firstname}"/></p></div>
+<div><label for="birthDay">วันเกิด</label><input id="birthDay" name="birthDay" type="date" max="${maxBirthDay}" required value="<c:out value='${values.birthDay}'/>" aria-describedby="birthDay-error"><p id="birthDay-error" class="field-error"><c:out value="${errors.birthDay}"/></p></div>
+<div><label for="surname">นามสกุล</label><input id="surname" name="surname" type="text" maxlength="100" required value="<c:out value='${values.surname}'/>" aria-describedby="surname-error"><p id="surname-error" class="field-error"><c:out value="${errors.surname}"/></p></div>
+<div><label for="email">อีเมล</label><input id="email" name="email" type="email" maxlength="50" required value="<c:out value='${values.email}'/>" aria-describedby="email-error"><p id="email-error" class="field-error"><c:out value="${errors.email}"/></p></div>
+<div><label for="phoneNumber">เบอร์โทรศัพท์</label><input id="phoneNumber" name="phoneNumber" type="tel" maxlength="10" required value="<c:out value='${values.phoneNumber}'/>" aria-describedby="phoneNumber-error"><p id="phoneNumber-error" class="field-error"><c:out value="${errors.phoneNumber}"/></p></div>
+<div><label>เพศ</label><label class="gender-option"><input type="radio" name="gender" value="ชาย" required <c:if test="${values.gender eq 'ชาย'}">checked</c:if>>ชาย</label><label class="gender-option"><input type="radio" name="gender" value="หญิง" required <c:if test="${values.gender eq 'หญิง'}">checked</c:if>>หญิง</label><label class="gender-option"><input type="radio" name="gender" value="ไม่ระบุ" required <c:if test="${values.gender eq 'ไม่ระบุ'}">checked</c:if>>อื่น ๆ / ไม่ระบุ</label><p id="gender-error" class="field-error"><c:out value="${errors.gender}"/></p></div>
+<div class="wide"><label for="bio">ประวัติย่อ (Bio)</label><textarea id="bio" name="bio" maxlength="255"><c:out value="${values.bio}"/></textarea><p id="bio-error" class="field-error"><c:out value="${errors.bio}"/></p></div>
+<c:if test="${not empty errors}"><p class="wide">หากเลือกรูปใหม่ไว้ กรุณาเลือกไฟล์อีกครั้งก่อนบันทึก</p></c:if>
+<div class="card-actions wide"><a class="detail-button" href="${pageContext.request.contextPath}/viewProfile">ยกเลิก</a><button type="submit">บันทึกข้อมูล</button></div></div></form></main>
+<script src="${pageContext.request.contextPath}/js/edit-profile.js"></script></body></html>
